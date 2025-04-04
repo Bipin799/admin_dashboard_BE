@@ -12,9 +12,12 @@ const getUsers = (callback) => {
 const getUserByEmail = (email, callback) => {
   pool.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
     if (err) return callback(err, null);
-    callback(null, results[0]); // Return the first matching user
+    
+    // Ensure it always returns an array, even if empty
+    callback(null, results.length > 0 ? results[0] : null);
   });
 };
+
 
 // Add a new user
 const addUser = (user, callback) => {

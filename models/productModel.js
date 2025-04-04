@@ -12,20 +12,22 @@ const getProductById = (id, callback) => {
 
 // Add a new product
 const addProduct = (product, callback) => {
-  const { name, price, description, stock } = product;
+  console.log("product",product);
+  
+  const { title, description, price, category } = product;
   pool.query(
-    "INSERT INTO products (name, price, description, stock) VALUES (?, ?, ?, ?)",
-    [name, price, description, stock],
+    "INSERT INTO products (id, title, description, price, category) VALUES (?, ?, ?, ?, ?)",
+    [22,title, description, price, category ],
     callback
   );
 };
 
 // Update an existing product
 const updateProduct = (id, product, callback) => {
-  const { name, price, description, stock } = product;
+  const { title, description, price, category, image } = product;
   pool.query(
-    "UPDATE products SET name=?, price=?, description=?, stock=? WHERE id=?",
-    [name, price, description, stock, id],
+    "UPDATE products SET title=?, description=?, price=?, category=?, image=? WHERE id=?",
+    [title, description, price, category, image, id],
     callback
   );
 };

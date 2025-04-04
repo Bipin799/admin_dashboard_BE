@@ -25,23 +25,64 @@ const getProduct = (req, res) => {
 };
 
 // Add a new product
+// const createProduct = (req, res) => {
+//   productModel.addProduct(req.body, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: "Failed to add product" });
+//     }
+//     res.status(201).json({ message: "Product added successfully", id: results.insertId });
+//   });
+// };
+
 const createProduct = (req, res) => {
-  productModel.addProduct(req.body, (err, results) => {
+  const product = {
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+    category: req.body.category,
+    //image: req.body.image || null
+  };
+  productModel.addProduct(product, (err, results) => {
+    console.log("err",err);
+    
     if (err) {
       return res.status(500).json({ error: "Failed to add product" });
     }
-    res.status(201).json({ message: "Product added successfully", id: results.insertId });
+    res.status(201).json({
+      message: "Product added successfully", 
+      id: results.insertId
+    });
   });
 };
 
 // Update a product
+// const updateProduct = (req, res) => {
+//   const { id } = req.params;
+//   productModel.updateProduct(id, req.body, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: "Failed to update product" });
+//     }
+//     res.status(200).json({ message: "Product updated successfully" });
+//   });
+// };
+
 const updateProduct = (req, res) => {
   const { id } = req.params;
-  productModel.updateProduct(id, req.body, (err, results) => {
+  const product = {
+    title: req.body.title,
+    description: req.body.description,
+    price: req.body.price,
+    category: req.body.category,
+    image: req.body.image || null
+  };
+
+  productModel.updateProduct(id, product, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Failed to update product" });
     }
-    res.status(200).json({ message: "Product updated successfully" });
+    res.status(200).json({ 
+      message: "Product updated successfully"
+    });
   });
 };
 

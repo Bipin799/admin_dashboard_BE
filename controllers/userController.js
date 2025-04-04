@@ -15,17 +15,31 @@ const getAllUsers = (req, res) => {
 // Login user
 const loginUser = (req, res) => {
   const { email, password } = req.body;
-  User.getUserByEmail(email, (err, results) => {
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  User.getUserByEmail(email, (err, user) => {
     if (err) {
       console.error("Error fetching user:", err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
-    if (results.length === 0 || results[0].password !== password) {
+
+    // Check if user exists
+    if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-    res.json(results[0]); // Send user data on successful login
+
+    // Validate password
+    if (user.password !== password) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    res.json({ message: "Login successful", user });
   });
 };
+
 
 // Add a new user
 const createUser = (req, res) => {
