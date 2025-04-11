@@ -1,40 +1,52 @@
 const pool = require("../config/db");
 
-// Fetch all products
-const getProducts = (callback) => {
-  pool.query("SELECT * FROM products", callback);
+const getProducts = async () => {
+  const [rows] = await pool.query("SELECT * FROM products");
+  return rows;
 };
 
-// Fetch a single product by ID
-const getProductById = (id, callback) => {
-  pool.query("SELECT * FROM products WHERE id = ?", [id], callback);
+const getProductById = async (id) => {
+  const [rows] = await pool.query("SELECT * FROM products WHERE id = ?", [id]);
+  return rows[0]; // or return rows if you want full array
 };
 
-// Add a new product
-const addProduct = (product, callback) => {
-  console.log("product",product);
-  
-  const { title, description, price, category } = product;
-  pool.query(
-    "INSERT INTO products (id, title, description, price, category) VALUES (?, ?, ?, ?, ?)",
-    [22,title, description, price, category ],
-    callback
-  );
-};
+// const addProduct = async (product) => {
+//   const { title, description, price, category } = product;
+//   const [result] = await pool.query(
+//     "INSERT INTO products (title, description, price, category) VALUES (?, ?, ?, ?)",
+//     [title, description, price, category]
+//   );
+//   return result;
+// };
 
-// Update an existing product
-const updateProduct = (id, product, callback) => {
+const addProduct = async (product) => {
   const { title, description, price, category, image } = product;
-  pool.query(
-    "UPDATE products SET title=?, description=?, price=?, category=?, image=? WHERE id=?",
-    [title, description, price, category, image, id],
-    callback
+  const [result] = await pool.query(
+    "INSERT INTO products (title, description, price, category, image) VALUES (?, ?, ?, ?, ?)",
+    [title, description, price, category, image || null]
   );
+  return result;
 };
 
-// Delete a product
-const deleteProduct = (id, callback) => {
-  pool.query("DELETE FROM products WHERE id=?", [id], callback);
+
+const updateProduct = async (id, product) => {
+  const { title, description, price, category, image } = product;
+  const [result] = await pool.query(
+    "UPDATE products SET title=?, description=?, price=?, category=?, image=? WHERE id=?",
+    [title, description, price, category, image, id]
+  );
+  return result;
 };
 
-module.exports = { getProducts, getProductById, addProduct, updateProduct, deleteProduct };
+const deleteProduct = async (id) => {
+  const [result] = await pool.query("DELETE FROM products WHERE id=?", [id]);
+  return result;
+};
+
+module.exports = {
+  getProducts,
+  getProductById,
+  addProduct,
+  updateProduct,
+  deleteProduct
+};
